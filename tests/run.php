@@ -11,5 +11,6 @@ require __DIR__ . '/auth_test.php';
 require __DIR__ . '/login_test.php';
 require __DIR__ . '/csrf_test.php';
 require __DIR__ . '/repository_test.php';
+require __DIR__ . '/request_security_test.php';
 
 finishTests();

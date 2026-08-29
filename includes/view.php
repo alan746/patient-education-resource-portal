@@ -12,6 +12,11 @@ function searchTerm(array $query): string
     return trim((string) ($query['q'] ?? ''));
 }
 
+function isMutationMethodAllowed(string $method): bool
+{
+    return $method === 'POST';
+}
+
 function setFlash(string $message): void
 {
     $_SESSION['_flash'] = $message;
