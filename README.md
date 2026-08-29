@@ -4,7 +4,8 @@ A small server-rendered PHP/MySQL portal for browsing and searching patient educ
 
 ## Requirements
 
-- PHP 8.1 or later, with the PDO MySQL extension enabled.
+- PHP 8.1 or later, with the PDO MySQL extension enabled for application persistence.
+- The PDO SQLite extension, required only to run the in-memory test suite with `php tests/run.php`.
 - MySQL 8.0 or later.
 - The MySQL command-line client for importing the schema.
 

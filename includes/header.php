@@ -18,6 +18,7 @@ $pageTitle = $pageTitle ?? 'Patient Education Resources';
         <a class="site-header__brand" href="index.php">Patient Education Resources</a>
         <nav class="site-header__nav" aria-label="Account">
             <?php if (isLoggedIn()): ?>
+                <a href="create.php">Create resource</a>
                 <span>Signed in as <?= e((string) ($_SESSION['email'] ?? '')) ?></span>
                 <form action="logout.php" method="post">
                     <input type="hidden" name="_token" value="<?= e(csrfToken()) ?>">
