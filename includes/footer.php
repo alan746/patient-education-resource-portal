@@ -3,7 +3,7 @@
 declare(strict_types=1);
 ?>
 <footer class="site-footer">
-    <div class="container">
+    <div class="container site-footer__inner">
         <p>Patient Education Resources</p>
     </div>
 </footer>

@@ -10,12 +10,13 @@ $pageTitle = $pageTitle ?? 'Patient Education Resources';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($pageTitle) ?></title>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 <header class="site-header">
     <div class="container site-header__inner">
-        <a href="index.php">Patient Education Resources</a>
-        <nav aria-label="Account">
+        <a class="site-header__brand" href="index.php">Patient Education Resources</a>
+        <nav class="site-header__nav" aria-label="Account">
             <?php if (isLoggedIn()): ?>
                 <span>Signed in as <?= e((string) ($_SESSION['email'] ?? '')) ?></span>
                 <form action="logout.php" method="post">
