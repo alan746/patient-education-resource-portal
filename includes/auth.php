@@ -14,6 +14,11 @@ function isLoggedIn(): bool
     return currentUserId() !== null;
 }
 
+function credentialsAreValid(?array $user, string $password): bool
+{
+    return $user !== null && password_verify($password, (string) $user['password_hash']);
+}
+
 function requireLogin(): void
 {
     if (!isLoggedIn()) {
