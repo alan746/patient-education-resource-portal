@@ -9,7 +9,10 @@ session_set_cookie_params([
 ]);
 session_start();
 
+require __DIR__ . '/config/database.php';
 require __DIR__ . '/includes/validation.php';
 require __DIR__ . '/includes/view.php';
 require __DIR__ . '/includes/auth.php';
 require __DIR__ . '/includes/csrf.php';
+require __DIR__ . '/includes/user_repository.php';
+require __DIR__ . '/includes/resource_repository.php';
