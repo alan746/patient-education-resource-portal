@@ -1,8 +1,8 @@
-# Patient Education Resource Portal Design
+# Patient Education Resource Portal Architecture
 
 ## Goal
 
-Build a small, complete PHP/MySQL CRUD application that a developer can understand within a few hours and explain in an interview. The application demonstrates two paths clearly:
+The portal is a PHP/MySQL CRUD application for browsing, searching, and managing patient education resources. Its core request paths are:
 
 1. Browser → HTML form → PHP → server-side validation → PDO prepared statement → MySQL → result → HTML.
 2. Login → `password_verify()` → PHP session → server-side authorization → CRUD.
@@ -67,7 +67,7 @@ The foreign key uses `ON DELETE RESTRICT`. No user-deletion feature exists.
 - `config/database.php`: create the PDO connection from environment variables.
 - `includes/auth.php`: session authentication and owner-authorization helpers.
 - `includes/csrf.php`: CSRF token creation and verification.
-- `includes/resources.php`: prepared resource queries.
+- `includes/resource_repository.php`: prepared resource queries.
 - `includes/validation.php`: login and resource form validation.
 - `includes/view.php`: output escaping, redirects, flash messages, and shared rendering helpers.
 - `includes/header.php` and `includes/footer.php`: shared page structure.
@@ -85,7 +85,7 @@ Delete uses POST exclusively. `delete.php` rejects other methods, verifies CSRF 
 
 ## Authentication and Authorization
 
-The seed script stores only a password hash. The README may publish the demo credentials `demo@example.com` / `password`; the database never stores the plain-text password.
+The seed script stores only a password hash. Local setup uses the demo credentials `demo@example.com` / `password`; the database never stores the plain-text password.
 
 Login looks up the email using a prepared statement and calls `password_verify()`. On success it rotates the session ID and stores the numeric user ID and email in the session. Logout clears the session after a valid POST CSRF check.
 
@@ -119,11 +119,3 @@ Native PHP tests cover:
 - URL scheme restrictions and output escaping.
 
 Verification also includes PHP syntax checks for every PHP file. Manual MySQL-backed checks cover database creation, idempotent demo seeding, login, browsing/searching, create/edit/delete, rejected unauthorized edit/delete, rejected GET deletion, rejected invalid CSRF, and responsive desktop/mobile layouts.
-
-## GitHub Workflow
-
-- The public repository is `alan746/patient-education-resource-portal`.
-- Work starts from a GitHub issue written with Goal, Files to edit, Expected behaviour, and Testing sections.
-- The branch follows `issue-<issue number>-<name>-<layer>-<module>`.
-- Commits follow `<type>(<scope>): <description>`.
-- The pull request records the fixed issue, completed behaviours, files changed, explanation, testing, and any uncertainty.
