@@ -56,6 +56,19 @@ function findResource(PDO $pdo, int $id): ?array
     return $resource === false ? null : $resource;
 }
 
+function findPublicResource(PDO $pdo, int $id): ?array
+{
+    $statement = $pdo->prepare(
+        'SELECT resources.*, users.email AS creator_email
+         FROM resources JOIN users ON users.id = resources.created_by
+         WHERE resources.id = :id'
+    );
+    $statement->execute(['id' => $id]);
+    $resource = $statement->fetch();
+
+    return $resource === false ? null : $resource;
+}
+
 function createResource(PDO $pdo, array $data, int $userId): int
 {
     $statement = $pdo->prepare(

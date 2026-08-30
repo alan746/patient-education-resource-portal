@@ -109,6 +109,15 @@ test('resource repository creates updates finds and deletes a resource', functio
     assertSameValue(null, findResource($pdo, $id));
 });
 
+test('resource repository finds public resource details with creator email', function (): void {
+    $pdo = repositoryTestDatabase();
+
+    $resource = findPublicResource($pdo, 1);
+    assertSameValue('Diabetes Basics', $resource['title']);
+    assertSameValue('owner@example.com', $resource['creator_email']);
+    assertSameValue(null, findPublicResource($pdo, 999));
+});
+
 test('user repository finds a user by email', function (): void {
     $pdo = repositoryTestDatabase();
 

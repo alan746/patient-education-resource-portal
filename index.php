@@ -46,7 +46,11 @@ require __DIR__ . '/includes/header.php';
         <section aria-label="Resources">
             <?php foreach ($resources as $resource): ?>
                 <article class="resource-card">
-                    <h2><?= e((string) $resource['title']) ?></h2>
+                    <h2>
+                        <a href="resource.php?id=<?= e((string) $resource['id']) ?>">
+                            <?= e((string) $resource['title']) ?>
+                        </a>
+                    </h2>
                     <p>Category: <?= e((string) $resource['category']) ?></p>
                     <p><?= e((string) $resource['description']) ?></p>
                     <p><a href="<?= e((string) $resource['url']) ?>">Visit resource</a></p>
