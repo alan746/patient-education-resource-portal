@@ -1,18 +1,16 @@
 # Patient Education Resource Portal Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Build a minimal server-rendered PHP/MySQL portal where anyone can browse and search patient education resources and a seeded demo user can manage only their own resources.
 
 **Architecture:** Use one PHP entry-point file per browser action, small shared function files, and PDO repositories. Keep authentication and ownership in server-side helpers, use POST plus CSRF for every mutation, and render escaped HTML directly without a framework.
 
 **Tech Stack:** PHP 8.1+, PDO MySQL, MySQL 8.0+, PHP sessions, HTML5, CSS3, native PHP test runner
 
-**Spec:** `docs/superpowers/specs/2026-08-28-patient-education-resource-portal-design.md`
+**Spec:** `docs/specs/2026-08-28-patient-education-resource-portal-design.md`
 
 ## Global Constraints
 
-- Do not add registration, roles, tags, likes, comments, AI, AWS, Docker, frameworks, APIs, or distributed services.
+- Do not add registration, roles, tags, likes, comments, AWS, Docker, frameworks, APIs, or distributed services.
 - Use the exact `users` and `resources` columns from the specification.
 - Use `PDO::prepare()` plus `PDOStatement::execute()` for every application SQL statement.
 - Store only the result of `password_hash()` for the seeded demo password.
@@ -28,7 +26,7 @@
 - `bootstrap.php`: start the session safely and load shared functions.
 - `config/database.php`: expose the single `db(): PDO` connection factory.
 - `includes/auth.php`: login-state and owner-authorization decisions.
-- `includes/csrf.php`: CSRF token generation and verification.
+- `includes/csrf.php`: CSRF token creation and verification.
 - `includes/resource_repository.php`: all resource database queries.
 - `includes/user_repository.php`: demo-user lookup.
 - `includes/validation.php`: normalize and validate login/resource form data.
@@ -236,7 +234,7 @@ function isValidCsrfToken(?string $submittedToken): bool
 }
 ```
 
-`loginUser()` calls `session_regenerate_id(true)` before storing integer `user_id` and `email`. `logoutUser()` clears `$_SESSION`, expires the session cookie when cookies are active, and calls `session_destroy()` when a session is active. `bootstrap.php` enables strict session mode and HTTP-only, SameSite=Lax cookies before `session_start()`, then requires every shared function file.
+`loginUser()` rotates the active session identifier before storing integer `user_id` and `email`. `logoutUser()` clears `$_SESSION`, expires the session cookie when cookies are active, and calls `session_destroy()` when a session is active. `bootstrap.php` enables strict session mode and HTTP-only, SameSite=Lax cookies before `session_start()`, then requires every shared function file.
 
 - [ ] **Step 4: Run the tests and verify GREEN**
 
@@ -726,7 +724,7 @@ Create the schema, run the seed twice, and confirm only one demo user exists. Ve
 
 - [ ] **Step 4: Review scope and security constraints**
 
-Use `rg` to confirm no registration, role, tag, like, comment, AI, AWS, Docker, framework, or JavaScript feature was added. Inspect every application SQL call for `prepare()` followed by `execute()`. Inspect edit and delete to confirm direct session-to-`created_by` authorization.
+Use `rg` to confirm no registration, role, tag, like, comment, AWS, Docker, framework, or JavaScript feature was added. Inspect every application SQL call for `prepare()` followed by `execute()`. Inspect edit and delete to confirm direct session-to-`created_by` authorization.
 
 - [ ] **Step 5: Push and open the pull request**
 
