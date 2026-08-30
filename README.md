@@ -47,6 +47,20 @@ php tests/run.php
 
 Open `http://localhost:8000/index.php`. The seed is idempotent, so it is safe to run it again. The demo account is `demo@example.com` with password `password`.
 
+## Local and public access
+
+`http://localhost:8000` is a development address. It works only on the computer running the PHP server and is not a public website address. Keep the PHP terminal and MySQL service running while using the local site.
+
+The GitHub repository stores the source code but does not run the PHP application or its MySQL database. To make the portal available to other people, deploy it to a web host that supports PHP 8.1 or later and MySQL 8.0 or later:
+
+1. Upload the tracked project files to the host's web directory.
+2. Create a MySQL database and import `database/schema.sql`.
+3. Set `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` in the hosting environment.
+4. Run `php database/seed.php` once to create the demo account.
+5. Open the public address supplied by the host, such as `https://resources.example.com`.
+
+After deployment, visitors need only the public address and a browser. They do not need PHP or MySQL installed on their own computers.
+
 ## Project structure
 
 ```text
