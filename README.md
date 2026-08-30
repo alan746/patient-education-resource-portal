@@ -1,6 +1,6 @@
 # Patient Education Resource Portal
 
-A small server-rendered PHP/MySQL portal for browsing and searching patient education resources. The seeded demo user can create resources and can edit or delete only resources they own.
+A small server-rendered PHP/MySQL portal for browsing, filtering, and searching patient education resources. Visitors can open a public detail page for each resource. The seeded demo user can create resources and can edit or delete only resources they own.
 
 ## Requirements
 
@@ -70,7 +70,8 @@ config/database.php                PDO MySQL connection factory
 database/schema.sql                MySQL tables and foreign key
 database/seed.php                  Idempotent demo-user seed
 includes/                          Authentication, CSRF, validation, repositories, and views
-index.php                          Public resource browsing and search
+index.php                          Public browsing, search, and category filtering
+resource.php                       Public resource detail page
 login.php / logout.php             Demo authentication endpoints
 create.php / edit.php / delete.php Authenticated resource management endpoints
 tests/                             Dependency-free automated tests
@@ -78,11 +79,13 @@ tests/                             Dependency-free automated tests
 
 ## Request walkthrough
 
-Public browsing and search follow this chain:
+Public browsing, filtering, and resource details follow this chain:
 
-1. `index.php` reads and normalizes the optional `q` query parameter.
-2. `listResources()` prepares and executes either the listing or search query.
-3. The page escapes every dynamic value and renders matching resource cards or the empty state.
+1. `index.php` reads and normalizes the optional `q` and `category` query parameters.
+2. `listResources()` builds the matching conditions, binds every value, and returns resources ordered newest first.
+3. `listResourceCategories()` supplies the category choices from existing resources.
+4. Each title links to `resource.php`, which validates the numeric ID and loads the selected resource with its creator email.
+5. Both pages escape every dynamic value before rendering it.
 
 Authenticated resource management follows this chain:
 
