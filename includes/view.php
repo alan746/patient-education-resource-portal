@@ -12,6 +12,11 @@ function searchTerm(array $query): string
     return trim((string) ($query['q'] ?? ''));
 }
 
+function categoryFilter(array $query): string
+{
+    return trim((string) ($query['category'] ?? ''));
+}
+
 function isMutationMethodAllowed(string $method): bool
 {
     return $method === 'POST';

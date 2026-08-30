@@ -13,6 +13,8 @@ The application provides only:
 
 - Public resource browsing.
 - Public search across resource title, description, and category.
+- Exact category filtering that can be combined with search.
+- Public detail pages for individual resources.
 - Login with one seeded demo account.
 - Authenticated resource creation.
 - Owner-only resource editing and deletion.
@@ -58,7 +60,8 @@ The foreign key uses `ON DELETE RESTRICT`. No user-deletion feature exists.
 
 ## Pages and Responsibilities
 
-- `index.php`: browse all resources and handle the optional `q` search query.
+- `index.php`: browse resources and handle the optional `q` search and `category` filter queries.
+- `resource.php`: validate a resource ID and render its public details with creator information.
 - `login.php`: render and process the login form.
 - `logout.php`: accept POST, validate the CSRF token, and end the session.
 - `create.php`: require login, render the form, validate POST data, and insert a resource owned by the current user.
@@ -77,7 +80,9 @@ The foreign key uses `ON DELETE RESTRICT`. No user-deletion feature exists.
 
 ## Request and Data Flow
 
-Public listing prepares and executes either a complete resource query or a search query using one bound wildcard term for title, description, and category. Results include the creator email through a join and are rendered with escaped output.
+Public listing builds prepared conditions from the optional search term and exact category filter. Search checks title, description, and category with bound wildcard values, while the category filter uses a separate bound value. Results include the creator email through a join and are rendered with escaped output.
+
+The category selector is populated from a prepared distinct-category query. Each resource title links to `resource.php`, which validates the numeric ID, loads the resource and creator email through a prepared join, returns HTTP 404 when no record exists, and escapes the rendered values.
 
 Create and edit forms use POST. PHP normalizes input, runs server-side validation, and redisplays field-specific errors without writing when validation fails. Successful writes use a prepared PDO statement and redirect to `index.php` to prevent form resubmission.
 
@@ -105,7 +110,7 @@ Create requires an authenticated session. Edit and delete independently perform 
 
 ## Interface
 
-The English interface uses a narrow content container, a header with login state, a search form, resource cards, and simple forms. Cards display title, category, description, URL, owner email, and timestamps. Authenticated owners see edit and delete controls. A single responsive breakpoint stacks navigation, search controls, form actions, and cards on small screens.
+The English interface uses a narrow content container, a header with login state, combined search and category controls, resource cards, a resource detail view, and simple forms. Cards display title, category, description, URL, owner email, and timestamps. Authenticated owners see edit and delete controls. A single responsive breakpoint stacks navigation, filter controls, form actions, and cards on small screens.
 
 ## Testing
 
@@ -116,6 +121,8 @@ Native PHP tests cover:
 - Authentication state helpers.
 - CSRF token creation and verification.
 - Owner and non-owner authorization decisions.
+- Combined search and exact category filtering.
+- Category listing and public resource detail lookup.
 - URL scheme restrictions and output escaping.
 
 Verification also includes PHP syntax checks for every PHP file. Manual MySQL-backed checks cover database creation, idempotent demo seeding, login, browsing/searching, create/edit/delete, rejected unauthorized edit/delete, rejected GET deletion, rejected invalid CSRF, and responsive desktop/mobile layouts.

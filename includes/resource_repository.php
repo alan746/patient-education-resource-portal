@@ -2,18 +2,32 @@
 
 declare(strict_types=1);
 
-function listResources(PDO $pdo, string $search = ''): array
+function listResources(PDO $pdo, string $search = '', string $category = ''): array
 {
     $sql = 'SELECT resources.*, users.email AS creator_email
             FROM resources JOIN users ON users.id = resources.created_by';
     $params = [];
+    $conditions = [];
 
     if ($search !== '') {
-        $sql .= ' WHERE resources.title LIKE :title
-                  OR resources.description LIKE :description
-                  OR resources.category LIKE :category';
+        $conditions[] = '(resources.title LIKE :search_title
+                          OR resources.description LIKE :search_description
+                          OR resources.category LIKE :search_category)';
         $term = '%' . $search . '%';
-        $params = ['title' => $term, 'description' => $term, 'category' => $term];
+        $params += [
+            'search_title' => $term,
+            'search_description' => $term,
+            'search_category' => $term,
+        ];
+    }
+
+    if ($category !== '') {
+        $conditions[] = 'resources.category = :filter_category';
+        $params['filter_category'] = $category;
+    }
+
+    if ($conditions !== []) {
+        $sql .= ' WHERE ' . implode(' AND ', $conditions);
     }
 
     $sql .= ' ORDER BY resources.created_at DESC, resources.id DESC';
@@ -23,9 +37,32 @@ function listResources(PDO $pdo, string $search = ''): array
     return $statement->fetchAll();
 }
 
+function listResourceCategories(PDO $pdo): array
+{
+    $statement = $pdo->prepare(
+        'SELECT DISTINCT category FROM resources ORDER BY category ASC'
+    );
+    $statement->execute();
+
+    return $statement->fetchAll(PDO::FETCH_COLUMN);
+}
+
 function findResource(PDO $pdo, int $id): ?array
 {
     $statement = $pdo->prepare('SELECT * FROM resources WHERE id = :id');
+    $statement->execute(['id' => $id]);
+    $resource = $statement->fetch();
+
+    return $resource === false ? null : $resource;
+}
+
+function findPublicResource(PDO $pdo, int $id): ?array
+{
+    $statement = $pdo->prepare(
+        'SELECT resources.*, users.email AS creator_email
+         FROM resources JOIN users ON users.id = resources.created_by
+         WHERE resources.id = :id'
+    );
     $statement->execute(['id' => $id]);
     $resource = $statement->fetch();
 

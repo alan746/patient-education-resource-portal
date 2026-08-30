@@ -1,6 +1,6 @@
 # Patient Education Resource Portal
 
-A small server-rendered PHP/MySQL portal for browsing and searching patient education resources. The seeded demo user can create resources and can edit or delete only resources they own.
+A small server-rendered PHP/MySQL portal for browsing, filtering, and searching patient education resources. Visitors can open a public detail page for each resource. The seeded demo user can create resources and can edit or delete only resources they own.
 
 ## Requirements
 
@@ -47,6 +47,20 @@ php tests/run.php
 
 Open `http://localhost:8000/index.php`. The seed is idempotent, so it is safe to run it again. The demo account is `demo@example.com` with password `password`.
 
+## Local and public access
+
+`http://localhost:8000` is a development address. It works only on the computer running the PHP server and is not a public website address. Keep the PHP terminal and MySQL service running while using the local site.
+
+The GitHub repository stores the source code but does not run the PHP application or its MySQL database. To make the portal available to other people, deploy it to a web host that supports PHP 8.1 or later and MySQL 8.0 or later:
+
+1. Upload the tracked project files to the host's web directory.
+2. Create a MySQL database and import `database/schema.sql`.
+3. Set `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` in the hosting environment.
+4. Run `php database/seed.php` once to create the demo account.
+5. Open the public address supplied by the host, such as `https://resources.example.com`.
+
+After deployment, visitors need only the public address and a browser. They do not need PHP or MySQL installed on their own computers.
+
 ## Project structure
 
 ```text
@@ -56,7 +70,8 @@ config/database.php                PDO MySQL connection factory
 database/schema.sql                MySQL tables and foreign key
 database/seed.php                  Idempotent demo-user seed
 includes/                          Authentication, CSRF, validation, repositories, and views
-index.php                          Public resource browsing and search
+index.php                          Public browsing, search, and category filtering
+resource.php                       Public resource detail page
 login.php / logout.php             Demo authentication endpoints
 create.php / edit.php / delete.php Authenticated resource management endpoints
 tests/                             Dependency-free automated tests
@@ -64,11 +79,13 @@ tests/                             Dependency-free automated tests
 
 ## Request walkthrough
 
-Public browsing and search follow this chain:
+Public browsing, filtering, and resource details follow this chain:
 
-1. `index.php` reads and normalizes the optional `q` query parameter.
-2. `listResources()` prepares and executes either the listing or search query.
-3. The page escapes every dynamic value and renders matching resource cards or the empty state.
+1. `index.php` reads and normalizes the optional `q` and `category` query parameters.
+2. `listResources()` builds the matching conditions, binds every value, and returns resources ordered newest first.
+3. `listResourceCategories()` supplies the category choices from existing resources.
+4. Each title links to `resource.php`, which validates the numeric ID and loads the selected resource with its creator email.
+5. Both pages escape every dynamic value before rendering it.
 
 Authenticated resource management follows this chain:
 
