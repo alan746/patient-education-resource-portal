@@ -10,6 +10,10 @@ test('search term is trimmed from the query string', function (): void {
     assertSameValue('diabetes', searchTerm(['q' => '  diabetes  ']));
 });
 
+test('category filter is trimmed from the query string', function (): void {
+    assertSameValue('Wellness', categoryFilter(['category' => '  Wellness  ']));
+});
+
 test('flash message is consumed once', function (): void {
     $_SESSION = [];
     setFlash('Saved.');

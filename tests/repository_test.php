@@ -85,6 +85,19 @@ test('resource repository lists and searches resources', function (): void {
     assertSameValue('owner@example.com', $matches[0]['creator_email']);
 });
 
+test('resource repository lists categories and combines search with category filtering', function (): void {
+    $pdo = repositoryTestDatabase();
+
+    assertSameValue(['Chronic conditions', 'Wellness'], listResourceCategories($pdo));
+
+    $matches = listResources($pdo, '', 'Wellness');
+    assertSameValue(1, count($matches));
+    assertSameValue('Healthy Movement', $matches[0]['title']);
+
+    assertSameValue(1, count(listResources($pdo, 'gentle', 'Wellness')));
+    assertSameValue(0, count(listResources($pdo, 'diabetes', 'Wellness')));
+});
+
 test('resource repository creates updates finds and deletes a resource', function (): void {
     $pdo = repositoryTestDatabase();
 

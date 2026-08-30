@@ -28,8 +28,8 @@ textarea { min-height: 8rem; resize: vertical; }
 button { margin-top: 1rem; padding: .55rem .9rem; color: #fff; background: var(--accent); border: 1px solid var(--accent); border-radius: .3rem; cursor: pointer; }
 button:hover { background: #115247; border-color: #115247; }
 .search-form { max-width: none; align-items: end; margin: 1.5rem 0; padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: .45rem; }
-.search-form label { flex: 0 0 10rem; margin: 0; }
-.search-form input { flex: 1; }
+.search-field { flex: 1; }
+.search-field label { margin: 0; }
 .search-form button { width: auto; margin-top: 0; }
 
 [role="alert"] { margin-block: .5rem; color: #9d1c1c; font-weight: 700; }
@@ -47,6 +47,5 @@ button:hover { background: #115247; border-color: #115247; }
     .site-header__inner, .search-form, .resource-actions, .resource-meta { align-items: stretch; flex-direction: column; }
     .site-header__inner { padding-block: 1rem; }
     .site-header__nav { align-items: stretch; flex-direction: column; justify-content: flex-start; }
-    .search-form label { flex-basis: auto; }
     .search-form button, .resource-actions a, .resource-actions button { width: 100%; }
 }
